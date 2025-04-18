@@ -4,6 +4,11 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block meta_tags %}
+    <meta name="description" content="وبلاگ قلب سالم - مقالات و آموزش‌های سلامت قلب">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  {% endblock %}
   <title>{% block title %}وبلاگ قلب سالم{% endblock %}</title>
 
   <!-- Bootstrap RTL CDN (v5.3) -->
@@ -16,20 +21,19 @@
 </head>
 <body>
   <nav class="navbar navbar-light bg-light mb-4">
-    <div class="container-fluid">
+    <div class="container-fluid d-flex align-items-center">
       <!-- Hamburger menu toggle (replaces site name) -->
-      <button class="navbar-toggler me-2" type="button"
+      <button class="navbar-toggler ms-2" type="button"
              data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <form class="d-flex" method="get"
-            action="{% url 'post_search' %}">
+      <!-- Center link to homepage -->
+      <a class="navbar-brand mx-auto" href="{% url 'post_list' %}">مرکز قلب ایران</a>
+      <!-- Search form -->
+      <form class="d-flex" method="get" action="{% url 'post_search' %}">
         <input class="form-control me-2" type="search"
-               placeholder="جستجو…" name="q"
-               value="{{ request.GET.q }}">
-        <button class="btn btn-outline-success" type="submit">
-          جستجو
-        </button>
+               placeholder="جستجو…" name="q" value="{{ request.GET.q }}">
+        <button class="btn btn-outline-success" type="submit">جستجو</button>
       </form>
     </div>
   </nav>

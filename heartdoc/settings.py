@@ -46,11 +46,18 @@ INSTALLED_APPS = [
     'posts',
 
 ]
-
+# Build middleware list dynamically to avoid errors when optional packages are missing
+import importlib
 MIDDLEWARE = [
-    # Security and static files middleware for production
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise middleware removed: ensure whitenoise is installed or use alternative static file serving
+]
+try:
+    # Add WhiteNoise if installed
+    importlib.import_module('whitenoise.middleware')
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+except ImportError:
+    pass
+MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -127,7 +134,13 @@ USE_I18N = USE_L10N = USE_TZ = True
 STATIC_URL = 'static/'
 # Directory where collectstatic will collect static files for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# STATICFILES_STORAGE setting removed: configure an external static file server or install whitenoise
+# Configure WhiteNoise storage if available
+try:
+    import whitenoise.storage  # noqa: F401
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+except ImportError:
+    # WhiteNoise not installed: use default staticfiles storage
+    pass
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

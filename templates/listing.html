@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load embed %}
 
+{% block meta_tags %}
+  <meta name="description" content="{{ heading }}">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
 {% block title %}{{ heading }}{% endblock %}
 {% block content %}
   <h1 class="mb-4">{{ heading }}</h1>

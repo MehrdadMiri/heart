@@ -6,11 +6,13 @@ class PostAdmin(admin.ModelAdmin):
     list_display        = ("title", "category", "created_at", "video_url")
     list_filter         = ("category", "created_at")
     search_fields       = ("title", "body_md")
-    prepopulated_fields = {"slug": ("title",)}
+    # slug is auto-generated; show as read-only instead of prepopulated
+    readonly_fields = ("slug",)
     ordering            = ("-created_at",)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display        = ("name", "slug")
-    prepopulated_fields = {"slug": ("name",)}
+    # slug is auto-generated; display as read-only
+    readonly_fields = ("slug",)
     search_fields       = ("name",)
