@@ -10,51 +10,58 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <!-- Bootstrap JS Bundle (for collapse, offcanvas, etc.) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'post_list' %}">
-        وبلاگ قلب سالم
-      </a>
-      <button class="navbar-toggler" type="button"
-              data-bs-toggle="collapse" data-bs-target="#navbars">
+      <!-- Hamburger menu toggle (replaces site name) -->
+      <button class="navbar-toggler me-2" type="button"
+             data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="collapse navbar-collapse" id="navbars">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#"
-               id="catDropdown" role="button" data-bs-toggle="dropdown">
-              دسته‌بندی‌ها
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="catDropdown">
-              {% for cat in all_categories %}
-                <li>
-                  <a class="dropdown-item"
-                     href="{% url 'category_posts' cat.slug %}">
-                    {{ cat.name }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </li>
-        </ul>
-
-        <form class="d-flex" method="get"
-              action="{% url 'post_search' %}">
-          <input class="form-control me-2" type="search"
-                 placeholder="جستجو…" name="q"
-                 value="{{ request.GET.q }}">
-          <button class="btn btn-outline-success" type="submit">
-            جستجو
-          </button>
-        </form>
-      </div>
+      <form class="d-flex" method="get"
+            action="{% url 'post_search' %}">
+        <input class="form-control me-2" type="search"
+               placeholder="جستجو…" name="q"
+               value="{{ request.GET.q }}">
+        <button class="btn btn-outline-success" type="submit">
+          جستجو
+        </button>
+      </form>
     </div>
   </nav>
+  <!-- Offcanvas sidebar menu for categories and their posts -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="sidebarLabel">دسته‌بندی‌ها</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="list-unstyled">
+        {% for cat in all_categories %}
+          <li class="mb-2">
+            <a class="d-flex justify-content-between align-items-center py-2 link-dark text-decoration-none"
+               data-bs-toggle="collapse" href="#menu-{{ cat.slug }}" role="button"
+               aria-expanded="false" aria-controls="menu-{{ cat.slug }}">
+              {{ cat.name }}
+            </a>
+            <div class="collapse ps-3" id="menu-{{ cat.slug }}">
+              <ul class="list-unstyled">
+                {% for post in cat.posts.all %}
+                  <li><a href="{{ post.get_absolute_url }}" class="link-dark d-inline-block">{{ post.title }}</a></li>
+                {% empty %}
+                  <li><span class="text-muted">بدون مطلب.</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 
   <div class="container">
     {% block content %}{% endblock %}

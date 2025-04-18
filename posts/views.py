@@ -1,17 +1,42 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, F, Value, CharField, TextField
+from django.db.models.functions import Replace, Lower
 from .models import Post, Category
 import markdown
 
 def post_list(request):
-    qs = Post.objects.all()
-    return _render_page(request, qs, "مقالات قلب سالم")
+    # Homepage: instructions only; navigation via sidebar menu
+    return render(request, "home.html")
 
 def post_search(request):
     q = request.GET.get("q", "").strip()
-    qs = Post.objects.filter(
-        Q(title__icontains=q) | Q(body_md__icontains=q)
+    # Normalize query: map hamza variants and alef-madda to bare alef, lowercase
+    norm_q = q.replace('آ', 'ا').replace('أ', 'ا').replace('إ', 'ا').lower()
+    # Annotate normalized fields and perform accent-insensitive, case-insensitive search
+    qs = Post.objects.annotate(
+        norm_title=Lower(
+            Replace(
+                Replace(
+                    Replace(
+                        F('title'), Value('آ'), Value('ا'), output_field=CharField()),
+                    Value('أ'), Value('ا'), output_field=CharField()),
+                Value('إ'), Value('ا'), output_field=CharField()
+            ),
+            output_field=CharField()
+        ),
+        norm_body=Lower(
+            Replace(
+                Replace(
+                    Replace(
+                        F('body_md'), Value('آ'), Value('ا'), output_field=TextField()),
+                    Value('أ'), Value('ا'), output_field=TextField()),
+                Value('إ'), Value('ا'), output_field=TextField()
+            ),
+            output_field=TextField()
+        ),
+    ).filter(
+        Q(norm_title__icontains=norm_q) | Q(norm_body__icontains=norm_q)
     )
     return _render_page(request, qs, f'نتایج جستجو: "{q}"', extra_ctx={"q": q})
 

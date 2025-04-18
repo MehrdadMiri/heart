@@ -18,16 +18,16 @@
   {% endfor %}
 </div>
 
-<nav class="mt-4 d-flex justify-content-center" hx-boost="true">
+<nav class="mt-4 d-flex justify-content-center">
   {% if page.has_previous %}
     <a class="btn btn-outline-secondary mx-1"
-       hx-get="?page={{ page.previous_page_number }}"
+       hx-get="{{ request.path }}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page.previous_page_number }}"
        hx-target="#posts">قبلی</a>
   {% endif %}
   <span class="mx-2">{{ page.number }} / {{ page.paginator.num_pages }}</span>
   {% if page.has_next %}
     <a class="btn btn-outline-secondary mx-1"
-       hx-get="?page={{ page.next_page_number }}"
+       hx-get="{{ request.path }}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page.next_page_number }}"
        hx-target="#posts">بعدی</a>
   {% endif %}
 </nav>
