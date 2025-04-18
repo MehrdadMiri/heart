@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third‑party
-    'django_htmx',
+    # HTMX request detection via custom middleware, no external app required
 
     # local
     'posts',
@@ -48,14 +48,17 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Security and static files middleware for production
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise middleware removed: ensure whitenoise is installed or use alternative static file serving
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_htmx.middleware.HtmxMiddleware",
+    # Custom HTMX middleware for request.htmx attribute
+    'heartdoc.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'heartdoc.urls'
@@ -86,7 +89,8 @@ WSGI_APPLICATION = 'heartdoc.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Convert Path to str to avoid TypeError in SQLite backend
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -120,8 +124,10 @@ USE_I18N = USE_L10N = USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
+# Directory where collectstatic will collect static files for production
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATICFILES_STORAGE setting removed: configure an external static file server or install whitenoise
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

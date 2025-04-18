@@ -4,6 +4,9 @@
     <article class="col">
       <div class="card h-100 p-3">
         <h2 class="h6"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <p class="text-muted small mb-2">
+          {{ post.created_at|date:"Y-m-d H:i" }}
+        </p>
 
         {% if post.video_url %}
           <div class="ratio ratio-16x9 rounded mb-2">

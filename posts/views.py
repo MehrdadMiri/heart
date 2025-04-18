@@ -6,8 +6,9 @@ from .models import Post, Category
 import markdown
 
 def post_list(request):
-    # Homepage: instructions only; navigation via sidebar menu
-    return render(request, "home.html")
+    # Homepage: show latest posts with pagination
+    qs = Post.objects.all()
+    return _render_page(request, qs, "آخرین پست‌ها")
 
 def post_search(request):
     q = request.GET.get("q", "").strip()

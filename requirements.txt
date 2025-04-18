@@ -1,0 +1,7 @@
+# Core dependencies for production
+Django>=5.2,<6.0
+# HTMX functionality provided via custom middleware; external django-htmx app no longer needed
+# django-htmx>=1.0
+Markdown>=3.0
+# whitenoise>=6.0  # removed or optional; install whitenoise manually if using WhiteNoiseMiddleware
+gunicorn>=20.0

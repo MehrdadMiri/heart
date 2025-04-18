@@ -33,6 +33,8 @@ class Post(models.Model):
         verbose_name="دسته‌بندی",
         on_delete=models.PROTECT,
         related_name="posts",
+        null=True,
+        blank=True,
     )
 
     class Meta:
