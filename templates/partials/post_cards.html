@@ -1,0 +1,33 @@
+{% load embed %}
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for post in page.object_list %}
+    <article class="col">
+      <div class="card h-100 p-3">
+        <h2 class="h6"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+
+        {% if post.video_url %}
+          <div class="ratio ratio-16x9 rounded mb-2">
+            <iframe src="{{ post.video_url|aparat_embed }}"
+                    title="{{ post.title }}" allowfullscreen></iframe>
+          </div>
+        {% endif %}
+
+        <p>{{ post.body_md|truncatechars:110 }}</p>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
+<nav class="mt-4 d-flex justify-content-center" hx-boost="true">
+  {% if page.has_previous %}
+    <a class="btn btn-outline-secondary mx-1"
+       hx-get="?page={{ page.previous_page_number }}"
+       hx-target="#posts">قبلی</a>
+  {% endif %}
+  <span class="mx-2">{{ page.number }} / {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}
+    <a class="btn btn-outline-secondary mx-1"
+       hx-get="?page={{ page.next_page_number }}"
+       hx-target="#posts">بعدی</a>
+  {% endif %}
+</nav>

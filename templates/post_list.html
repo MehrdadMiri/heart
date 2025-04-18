@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load embed %}
+{% block title %}همهٔ مقالات{% endblock %}
+{% block content %}
+  <h1 class="mb-4">مقالات قلب سالم</h1>
+
+  <section id="posts">
+      {% include "partials/post_cards.html" with page=page %}
+  </section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load embed %}
+
+{% block title %}{{ heading }}{% endblock %}
+{% block content %}
+  <h1 class="mb-4">{{ heading }}</h1>
+  <section id="posts">
+    {% include "partials/post_cards.html" with page=page %}
+  </section>
+{% endblock %}

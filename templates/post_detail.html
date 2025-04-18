@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load embed %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+  <article class="mx-auto" style="max-width:700px;">
+    <h1 class="mb-3">{{ post.title }}</h1>
+
+    {% if post.video_url %}
+      <figure class="ratio ratio-16x9 rounded mb-4">
+        <iframe src="{{ post.video_url|aparat_embed }}" allowfullscreen></iframe>
+      </figure>
+    {% endif %}
+
+    <div class="markdown-body">{{ html_body|safe }}</div>
+  </article>
+{% endblock %}
