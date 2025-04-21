@@ -29,9 +29,19 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <!-- Bootstrap JS Bundle (for collapse, offcanvas, etc.) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Small ECG inside hollow heart icon -->
+  <style>
+    #ecg {
+      width: 60px;
+      height: 60px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
+  
   <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex align-items-center">
       <!-- Hamburger menu toggle (replaces site name) -->
@@ -40,7 +50,10 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <!-- Center link to homepage -->
-      <a class="navbar-brand mx-auto" href="{% url 'post_list' %}">مرکز قلب ایران</a>
+      <a class="navbar-brand mx-auto d-flex align-items-center" href="{% url 'post_list' %}">
+        <span>مرکز قلب ایران</span>
+        <canvas id="ecg" class="ms-2" width="60" height="60"></canvas>
+      </a>
       <!-- Search form -->
       <form class="d-flex" method="get" action="{% url 'post_search' %}">
         <input class="form-control me-2" type="search"
@@ -82,5 +95,43 @@
   <div class="container">
     {% block content %}{% endblock %}
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var canvas = document.getElementById('ecg');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width, h = canvas.height;
+      var cY = h / 2;
+      var patternSingle = [[4,0],[4,-8],[2,16],[2,-24],[2,16],[4,0]];
+      var patternFull = patternSingle.concat(patternSingle, patternSingle);
+      // Use Bootstrap 'success' color for ECG
+      var style = getComputedStyle(document.documentElement);
+      var successColor = style.getPropertyValue('--bs-success').trim() || '#198754';
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = successColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        var x = 0, y = cY;
+        ctx.moveTo(x, y);
+        var i = 0;
+        function step() {
+          if (i >= patternFull.length) {
+            animate();
+            return;
+          }
+          var s = patternFull[i++];
+          x += s[0]; y = cY + s[1];
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          setTimeout(step, 200);
+        }
+        step();
+      }
+      animate();
+    });
+  </script>
+  
 </body>
 </html>
