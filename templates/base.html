@@ -102,8 +102,17 @@
       var ctx = canvas.getContext('2d');
       var w = canvas.width, h = canvas.height;
       var cY = h / 2;
-      var patternSingle = [[4,0],[4,-8],[2,16],[2,-24],[2,16],[4,0]];
+      // Each entry: [dx, dy] where dy is 1/4 of actual per-subdivision shift
+      var patternSingle = [[4,0],[4,-32],[2,64],[2,-96],[2,64],[4,0]];
+      // Expand to three beats
       var patternFull = patternSingle.concat(patternSingle, patternSingle);
+      // Subdivide each beat into 4 segments for smoother animation
+      var data = [];
+      patternFull.forEach(function(s) {
+        for (var k = 0; k < 4; k++) {
+          data.push([s[0] / 4, s[1] / 4]);
+        }
+      });
       // Use Bootstrap 'success' color for ECG
       var style = getComputedStyle(document.documentElement);
       var successColor = style.getPropertyValue('--bs-success').trim() || '#198754';
@@ -117,15 +126,16 @@
         ctx.moveTo(x, y);
         var i = 0;
         function step() {
-          if (i >= patternFull.length) {
+          if (i >= data.length) {
             animate();
             return;
           }
-          var s = patternFull[i++];
-          x += s[0]; y = cY + s[1];
+          var s = data[i++];
+          x += s[0];
+          y = cY + s[1];
           ctx.lineTo(x, y);
           ctx.stroke();
-          setTimeout(step, 200);
+          setTimeout(step, 50);
         }
         step();
       }
