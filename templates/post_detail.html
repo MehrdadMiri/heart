@@ -20,4 +20,35 @@
       </figure>
     {% endif %}
   </article>
+  <div class="mt-4">
+    <form hx-post="{% url 'like_post' post.slug %}" hx-swap="outerHTML" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-danger">
+        ❤ {{ post.likes.count }}
+      </button>
+    </form>
+  </div>
+
+  <section class="mt-5">
+    <h3>نظرات</h3>
+    {% for c in comments %}
+      <div class="border p-2 mb-2 rounded">
+        <strong>{{ c.name }}</strong>
+        <p class="mb-1">{{ c.body }}</p>
+        {% if c.reply %}
+          <div class="bg-light p-2 mt-2 rounded">
+            <strong>پاسخ:</strong> {{ c.reply }}
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p>هنوز نظری ثبت نشده است.</p>
+    {% endfor %}
+
+    <form method="post" action="{% url 'add_comment' post.slug %}" class="mt-3">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">ارسال نظر</button>
+    </form>
+  </section>
 {% endblock %}
