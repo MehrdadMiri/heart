@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}دستیار پزشک{% endblock %}
+{% block content %}
+<div id="chat-box" class="border rounded p-3 mb-3" style="height:300px; overflow-y:auto"></div>
+<form id="chat-form" hx-post="{% url 'chat_send' %}" hx-trigger="submit" hx-target="#chat-box" hx-swap="beforeend" class="d-flex">
+    <input type="text" name="message" class="form-control me-2" placeholder="پیام..." autocomplete="off">
+    <button class="btn btn-primary" type="submit">ارسال</button>
+</form>
+<script>
+    htmx.on('htmx:afterRequest', function(evt){
+        if(evt.detail.requestConfig.elt.id === 'chat-form'){
+            evt.detail.elt.reset();
+        }
+    });
+</script>
+{% endblock %}
