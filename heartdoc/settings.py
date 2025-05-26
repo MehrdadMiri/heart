@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,7 +44,6 @@ INSTALLED_APPS = [
 
     # local
     'posts',
-    'assistant',
 
 ]
 # Build middleware list dynamically to avoid errors when optional packages are missing
@@ -148,6 +146,3 @@ except ImportError:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# OpenAI API Key (set via environment variable)
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
