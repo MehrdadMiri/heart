@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q, F, Value, CharField, TextField
 from django.db.models.functions import Replace, Lower
-from .models import Post, Category
+from django.contrib.auth.decorators import login_required
+from .models import Post, Category, Comment
+from .forms import CommentForm
 import markdown
 
 def post_list(request):
@@ -49,7 +51,22 @@ def category_posts(request, slug):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     html_body = markdown.markdown(post.body_md, extensions=["fenced_code"])
-    return render(request, "post_detail.html", {"post": post, "html_body": html_body})
+    comments = post.comments.select_related("author")
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                Comment.objects.create(
+                    post=post,
+                    author=request.user,
+                    body=form.cleaned_data["body"],
+                )
+                form = CommentForm()
+        else:
+            form = CommentForm()
+    else:
+        form = CommentForm()
+    return render(request, "post_detail.html", {"post": post, "html_body": html_body, "comments": comments, "form": form})
 
 def _render_page(request, queryset, heading, extra_ctx=None):
     paginator = Paginator(queryset, 9)

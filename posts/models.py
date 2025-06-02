@@ -55,4 +55,20 @@ class Post(models.Model):
         return self.title
 
 
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    body = models.TextField("متن نظر")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = "نظر"
+        verbose_name_plural = "نظرات"
+
+    def __str__(self):
+        return f"{self.author} on {self.post}"
+
+
+
 

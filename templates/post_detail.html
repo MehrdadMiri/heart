@@ -20,4 +20,28 @@
       </figure>
     {% endif %}
   </article>
+
+  <section class="mt-5" id="comments">
+    <h2 class="h4 mb-3">نظرات</h2>
+    {% for c in comments %}
+      <div class="mb-3 border rounded p-3">
+        <strong>{{ c.author.username }}</strong>
+        <span class="text-muted small">{{ c.created_at|date:"Y-m-d H:i" }}</span>
+        <p class="mb-0">{{ c.body }}</p>
+      </div>
+    {% empty %}
+      <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+      <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form.body }}
+        <button type="submit" class="btn btn-primary mt-2">ارسال نظر</button>
+      </form>
+    {% else %}
+      <p class="mt-4">برای ثبت نظر لطفا <a href="{% url 'account_login' %}?next={{ request.path }}">وارد شوید</a>.</p>
+    {% endif %}
+  </section>
 {% endblock %}
+

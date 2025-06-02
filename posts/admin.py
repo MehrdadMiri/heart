@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Category
+from .models import Post, Category, Comment
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -16,3 +16,8 @@ class CategoryAdmin(admin.ModelAdmin):
     # slug is auto-generated; display as read-only
     readonly_fields = ("slug",)
     search_fields       = ("name",)
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("post", "author", "created_at")
+    search_fields = ("body",)

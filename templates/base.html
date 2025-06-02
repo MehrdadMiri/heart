@@ -72,6 +72,11 @@
                placeholder="جستجو…" name="q" value="{{ request.GET.q }}">
         <button class="btn btn-outline-success" type="submit">جستجو</button>
       </form>
+      {% if user.is_authenticated %}
+        <a href="{% url 'account_logout' %}" class="btn btn-link ms-3">خروج</a>
+      {% else %}
+        <a href="{% url 'account_login' %}" class="btn btn-link ms-3">ورود</a>
+      {% endif %}
     </div>
   </nav>
   <!-- Offcanvas sidebar menu for categories and their posts -->
@@ -157,3 +162,4 @@
   
 </body>
 </html>
+
