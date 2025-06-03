@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third‑party
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     # HTMX request detection via custom middleware, no external app required
 
     # local
@@ -62,6 +65,7 @@ MIDDLEWARE += [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Custom HTMX middleware for request.htmx attribute
