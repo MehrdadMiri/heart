@@ -3,3 +3,4 @@ Django==5.2
 Markdown==3.8
 whitenoise==6.9.0
 gunicorn==23.0.0
+django-allauth==0.61.1
