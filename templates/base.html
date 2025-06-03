@@ -72,6 +72,15 @@
                placeholder="جستجو…" name="q" value="{{ request.GET.q }}">
         <button class="btn btn-outline-success" type="submit">جستجو</button>
       </form>
+      <!-- Profile section -->
+      <div class="ms-2">
+        {% if user.is_authenticated %}
+          <span class="me-2">{{ user.username }}</span>
+          <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">خروج</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">ورود</a>
+        {% endif %}
+      </div>
     </div>
   </nav>
   <!-- Offcanvas sidebar menu for categories and their posts -->
